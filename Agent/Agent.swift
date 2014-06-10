@@ -19,14 +19,22 @@ class Agent: NSObject {
   var data: NSMutableData? = nil
   var done: (NSError?, NSHTTPURLResponse?, AnyObject?) -> () = { (_, _, _) -> () in }
 
+  struct StoredProperty {
+    static var baseURL = ""
+  }
+  
+  class func setBaseURL(baseURL: String) {
+    self.StoredProperty.baseURL = baseURL
+  }
+  
   /**
    * Initialize
    */
 
   init(method: String, url: String, headers: Dictionary<String, String>?) {
-    let _url = NSURL(string: url)
+    let _url = NSURL(string: Agent.StoredProperty.baseURL + url)
     self.request = NSMutableURLRequest(URL: _url)
-    self.request!.HTTPMethod = method;
+    self.request!.HTTPMethod = method
     if (headers) {
       self.request!.allHTTPHeaderFields = headers!
     }
